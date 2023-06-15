@@ -42,7 +42,7 @@ public class Ship {
     }
 
     private int getLength() {
-        return type == ShipType.FOUR_SLOT ? 4 : 2;
+        return type.getSize();
     }
 
     public Ship() {

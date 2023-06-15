@@ -43,10 +43,9 @@ public class GameService {
 
         // Generate ship positions
         for (int i = 0; i < 2; i++) {
-            int size = 2; // Two-slot ship
             boolean horizontal = random.nextBoolean();
 
-            Ship ship = generateShipPosition(size, horizontal, occupied, random);
+            Ship ship = generateShipPosition(ShipType.TWO_SLOT.getSize(), horizontal, occupied, random);
             ship.setType(ShipType.TWO_SLOT);
             ship.setGame(game);
             ships.add(ship);
@@ -54,10 +53,9 @@ public class GameService {
         }
 
         for (int i = 0; i < 2; i++) {
-            int size = 4; // Four-slot ship
             boolean horizontal = random.nextBoolean();
 
-            Ship ship = generateShipPosition(size, horizontal, occupied, random);
+            Ship ship = generateShipPosition(ShipType.FOUR_SLOT.getSize(), horizontal, occupied, random);
             ship.setGame(game);
             ship.setType(ShipType.FOUR_SLOT);
             ships.add(ship);

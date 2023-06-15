@@ -3,18 +3,41 @@ const data = {
 	"ships": [],
 	"gridSize": 10
 }
+
+const battleground = document.querySelector('.battleground');
+const favDialog = document.getElementById("favDialog");
+const dialogClose = document.querySelector(".dialogClose");
+const closeModal = () => {
+	favDialog.close();
+};
+
+const getShipByXandY = (x, y) => {
+	return data.ships.find(ship => {
+		return x >= ship.startX && x <= ship.endX && y >= ship.startY && y <= ship.endY;
+	});
+}
+
 const shoot = (cell) => {
 	fetch(`http://localhost:8080/games/${data.id}/shoot?x=${cell.getAttribute('data-x')}&y=${cell.getAttribute('data-y')}`, {
 		method: 'POST',
 		headers: {
 			"Content-Type": "application/json",
-			// 'Content-Type': 'application/x-www-form-urlencoded',
 		},
 	})
 		.then((response) => response.json())
 		.then((res) => {
+			if (res.hitsLeft === -1) {
+				alert("You have LOST the game");
+				window.location.reload();
+			}
+			if (res.hitsLeft === -2) {
+				alert("You have WON the game");
+				window.location.reload();
+			}
+			
 			cell.classList = [];
 			cell.classList.add('cell');
+			cell.removeEventListener('click', shootHandler);
 			if (res.hit) {
 				cell.classList.add('hit')
 			}
@@ -50,20 +73,10 @@ const shoot = (cell) => {
 
 		})
 }
-const battleground = document.querySelector('.battleground');
-const getShipByXandY = (x, y) => {
-	return data.ships.find(ship => {
-		return x >= ship.startX && x <= ship.endX && y >= ship.startY && y <= ship.endY;
-	});
-}
 
-const favDialog = document.getElementById("favDialog");
-const dialogClose = document.querySelector(".dialogClose");
-
-const closeModal = () => {
-	favDialog.close();
+const shootHandler = (event) => {
+	shoot(event.target);
 };
-
 
 const render = () => {
 	battleground.style.gridTemplateColumns = `repeat(${data.gridSize}, minmax(50px, 50px))`;
@@ -77,26 +90,22 @@ const render = () => {
 			cell.setAttribute('data-y', y);
 			cell.innerText = `X:${x}Y:${y}`;
 			const ship = getShipByXandY(x, y);
-			//		 if (ship) {
-			//		 	cell.classList.add('hit');
-			//		 }
+					 if (ship) {
+					 	cell.classList.add('ship');
+					 }
 			battleground.appendChild(cell);
 
-			cell.addEventListener('click', function () {
-				shoot(this);
-			});
+			cell.addEventListener('click', shootHandler);
 		}
 	}
 }
 
-
-document.querySelector('#start-game').addEventListener('click', () => {
+const handleGameStart = () => {
 	fetch(`http://localhost:8080/games`,
 		{
 			method: 'POST',
 			headers: {
 				"Content-Type": "application/json",
-				// 'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			body: JSON.stringify({
 				gridSize: parseInt(document.querySelector('#grid-size').value) || 10
@@ -113,4 +122,6 @@ document.querySelector('#start-game').addEventListener('click', () => {
 		.catch(err => {
 
 		})
-});
+}
+
+document.querySelector('#start-game').addEventListener('click', handleGameStart);

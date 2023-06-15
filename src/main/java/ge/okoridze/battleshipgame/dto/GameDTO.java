@@ -20,9 +20,17 @@ public class GameDTO {
         this.id = game.getId();
         this.ships = game.getShips();
         this.gridSize = game.getGridSize();
-        this.won = game.getHits() >= 0;
+        this.won = game.hasWon();
         this.hits = 50 - game.getHits();
         this.user = new UserDTO(game.getUser());
         this.createdAt = game.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public boolean isWon() {
+        return won;
+    }
+
+    public int getHits() {
+        return hits;
     }
 }

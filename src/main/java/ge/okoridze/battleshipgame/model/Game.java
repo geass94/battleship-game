@@ -79,6 +79,15 @@ public class Game {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public boolean hasWon()
+    {
+        int hits = 12;
+        for (Ship ship : this.getShips()) {
+            hits -= ship.getHits();
+        }
+        return hits == 0;
+    }
 }
 
 

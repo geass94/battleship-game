@@ -22,6 +22,10 @@
   background-color: #ccc;
 }
 
+.cell.ship {
+  background-color: cyan;
+}
+
 .cell.sunk {
   background-color: orange;
 }

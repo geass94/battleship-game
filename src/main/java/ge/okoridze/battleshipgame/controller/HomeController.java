@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Comparator;
+
 @Controller
 @RequestMapping("/")
 public class HomeController {
@@ -20,7 +22,12 @@ public class HomeController {
     @GetMapping
     public String home(Model model)
     {
-        model.addAttribute("games", gameRepository.findAll().stream().map(GameDTO::new));
+        model.addAttribute("games", gameRepository.findAll().stream().map(GameDTO::new)
+                .sorted(
+                        Comparator.comparing(GameDTO::isWon).reversed()
+                                .thenComparing(GameDTO::getHits)
+                )
+        );
         return "index";
     }
 }

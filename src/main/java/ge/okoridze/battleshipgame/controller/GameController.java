@@ -47,10 +47,10 @@ public class GameController {
     }
 
     @PostMapping(value = "/{id}/shoot", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ShotDTO shoot(@PathVariable Long id, @RequestParam int x, @RequestParam int y) {
+    public ShotDTO shoot(@PathVariable Long id, @RequestParam int x, @RequestParam int y) throws Exception {
         Game game = gameRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Game not found"));
-
+        if (game.getHits() <= 0) return new ShotDTO(-1, false, null);
         game.setHits(game.getHits() - 1);
         gameRepository.save(game);
 
@@ -58,7 +58,8 @@ public class GameController {
             if (x >= ship.getStartX() && x <= ship.getEndX() && y >= ship.getStartY() && y <= ship.getEndY()) {
                 ship.hit();
                 shipRepository.save(ship);
-                if (ship.isSunk()) return new ShotDTO(game.getHits(), true, new ShipDTO(
+                int hits = game.hasWon() ? -2 : game.getHits();
+                if (ship.isSunk()) return new ShotDTO(hits, true, new ShipDTO(
                         ship.getStartX(),
                         ship.getEndX(),
                         ship.getStartY(),
