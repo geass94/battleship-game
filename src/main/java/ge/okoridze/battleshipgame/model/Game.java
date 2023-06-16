@@ -82,7 +82,7 @@ public class Game {
 
     public boolean hasWon()
     {
-        int hits = 12;
+        int hits = this.getShips().stream().mapToInt(Ship::getSize).sum();
         for (Ship ship : this.getShips()) {
             hits -= ship.getHits();
         }

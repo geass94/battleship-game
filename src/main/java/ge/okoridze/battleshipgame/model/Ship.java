@@ -113,6 +113,11 @@ public class Ship {
         this.hits = hits;
     }
 
+    public Integer getSize()
+    {
+        return this.getType().getSize();
+    }
+
     @Override
     public String toString() {
         return "Ship{" +
